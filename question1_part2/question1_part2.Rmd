@@ -1,0 +1,115 @@
+## set up the working directory for the task
+
+```{r}
+folder = 'C:/Users/אחיעד/Desktop/data science/ass3/question1_part2'
+setwd(folder)
+
+#Or for all chuncks in this Rmarkdown:
+knitr::opts_knit$set(root.dir = folder)
+```
+
+## install and import the igraph package in order to create a graph for the grey anatomy data set.
+
+```{r}
+#install.packages("igraph")
+library(igraph)
+```
+
+## read the grey anatomy data set and create a graph from it using the igraph package.
+
+```{r}
+ga.data <- read.csv('ga_edgelist.csv', header = T)
+g <- graph.data.frame(ga.data,directed = F)
+```
+
+## We devide the communities of the grey anatomy using the edge.betweenness.community algorhitm of the igraph package. This is a divisive method that works on undirected unweighted graphs. It is based on calculating for each edge its betweeness - the number of shortest path going through this edge.It then iteratively removes the edge with the highest betweeness score, until reaching some threshold.The remaining connected vertices are the communities (clusters).
+
+# The number of communities that we get by the algorhitm is : 7.
+
+```{r}
+gc <-  edge.betweenness.community(g)
+gc
+```
+
+## We define a modularity measure that measures the quality of a network partition. It compares the number of edges in each cluster to the expected number of edges within it.
+
+# The modularity that we get by the algorhitm is:  0.5774221 .
+
+```{r}
+#modularity for each phase of the previous algorithm
+gc$modularity
+#best modularity score
+max(gc$modularity)
+#index (phase, i.e. partitioning) with the best score
+which.max(gc$modularity)
+```
+
+## We color the nodes by partitions, using the membership function that returns community ids for each vertex, according to our clustering model object (gc).We use the membership method to get the list of clusters assignments the nodes in the graph.
+
+```{r}
+#Store cluster ids for each vertex
+memb <- membership(gc)
+head(memb)
+```
+
+## We print the graph according to the colors of the nodes that we get by the membership functions. We print the name of each node in distance of 1.5 from the center of the vertex.
+
+# The size of each community is:
+#                                1) size 5.
+#                                2) size 3.
+#                                3) size 5.
+#                                4) size 4.
+#                                5) size 4.
+#                                6) size 3.
+#                                7) size 8.
+```{r}
+plot(g, vertex.size=5, vertex.label=V(g)$name,
+     vertex.color=memb,vertex.label.dist=1.5, asp=FALSE)
+```
+
+## We devide the communities of the grey anatomy using the fastgreedy.community algorhitm of the igraph package. This algorithm works on graphs with no self loops,We use the function simplify() to omit self loops from the graph.
+
+# The number of communities that we get by the algorhitm is : 6.
+
+```{r}
+# Remove self-loops is exist
+g <- simplify(g)
+gc2 <-  fastgreedy.community(g)
+gc2
+```
+
+## We define a modularity measure that measures the quality of a network partition. It compares the number of edges in each cluster to the expected number of edges within it.
+
+# The modularity that we get by the algorhitm is:  0.5947232 .
+
+```{r}
+#modularity for each phase of the previous algorithm
+gc2$modularity
+#best modularity score
+max(gc2$modularity)
+#index (phase, i.e. partitioning) with the best score
+which.max(gc2$modularity)
+```
+
+## We color the nodes by partitions, using the membership function that returns community ids for each vertex, according to our clustering model object (gc).We use the membership method to get the list of clusters assignments the nodes in the graph.
+
+```{r}
+#Store cluster ids for each vertex
+memb2 <- membership(gc2)
+head(memb2)
+```
+
+## We print the graph according to the colors of the nodes that we get by the membership functions. We print the name of each node in distance of 1.5 from the center of the vertex.
+
+# The size of each community is: 
+#                                1) size 5.
+#                                2) size 3.
+#                                3) size 5.
+#                                4) size 5.
+#                                5) size 4.
+#                                6) size 10.
+
+```{r}
+plot(g, vertex.size=5, vertex.label=V(g)$name,
+     vertex.color=memb2,vertex.label.dist=1.5, asp=FALSE)
+```
