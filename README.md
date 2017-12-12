@@ -6,7 +6,7 @@ output: md_document
 ## set up the working directory for the task
 
 ```{r}
-folder = 'C:/Users/àçéòã/Desktop/data science/ass3/question1_part1'
+folder = 'C:/Users/אחיעד/Desktop/data science/ass3/question1_part1'
 setwd(folder)
 
 #Or for all chuncks in this Rmarkdown:
