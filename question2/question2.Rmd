@@ -1,0 +1,141 @@
+## set up the working directory for the task
+
+```{r}
+folder = 'C:/Users/אחיעד/Desktop/data science/ass3/question2'
+setwd(folder)
+
+#Or for all chuncks in this Rmarkdown:
+knitr::opts_knit$set(root.dir = folder)
+```
+
+```{r}
+#install.packages("twitteR")
+#install.packages("tm")
+#install.packages("httr")
+#install.packages("wordcloud")
+#install.packages("igraph")
+library(igraph)
+library(twitteR)
+library(tm)
+library(httr)
+library(wordcloud)
+
+source("my_credentials.R")
+```
+
+```{r}
+# Here we set up the OAuth credentials for a twitteR session:
+achiad_credentials <- setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
+```
+```{r}
+searchRes <- searchTwitter("#champions_league", n=500)
+champions_tag <- twListToDF(searchRes) # converting to df
+usernames <- champions_tag$screenName
+temp_df <- twListToDF(lookupUsers(usernames))
+```
+```{r}
+  user1_edge <- c()
+  user2_edge <- c()
+```
+
+
+```{r}
+for(i in 1:nrow(temp_df)){
+  for(j in 1:nrow(temp_df)){
+    user1 <- temp_df[i,]
+    user2 <- temp_df[j,]
+    if((user1$screenName != user2$screenName) && (user1$lang == user2$lang)){
+      user1_edge<-c(user1_edge , user1$screenName)
+      user2_edge<-c(user2_edge , user2$screenName)
+    }
+  }
+}
+    
+```
+
+```{r}
+res <- cbind(from= user1_edge,to=user2_edge)
+write.csv(res,file="C:/Users/אחיעד/Desktop/data science/ass3/question2/ga_edgelist.csv",row.names = F)
+```
+
+```{r}
+ga.data <- read.csv('ga_edgelist.csv', header = T)
+g <- graph.data.frame(ga.data,directed = F)
+degr.score <- degree(g)
+V(g)$size <- degr.score * 4 # multiply by 2 for scale 
+
+plot(g, vertex.size=5, vertex.label=V(g)$name, vertex.label.dist=1.5, asp=FALSE)
+```
+
+```{r}
+clu <- components(g)
+groups(clu)
+```
+
+```{r}
+betweenness(g, v = V(g), directed = FALSE, weights = NULL,
+  nobigint = TRUE, normalized = FALSE)
+```
+
+```{r}
+closeness(g, vids = V(g),   weights = NULL, normalized = FALSE)
+```
+
+```{r}
+eigen_centrality(g, directed = FALSE, scale = TRUE, weights = NULL,
+  options = arpack_defaults)
+```
+
+```{r}
+gc <-  edge.betweenness.community(g)
+gc
+```
+
+```{r}
+#modularity for each phase of the previous algorithm
+gc$modularity
+#best modularity score
+max(gc$modularity)
+#index (phase, i.e. partitioning) with the best score
+which.max(gc$modularity)
+```
+
+```{r}
+#Store cluster ids for each vertex
+memb <- membership(gc)
+head(memb)
+```
+
+```{r}
+V(g)$label.cex = 0.5
+plot(g, vertex.size=5, vertex.label=V(g)$name,
+     vertex.color=memb,vertex.label.dist=1.5, asp=FALSE)
+```
+
+```{r}
+# Remove self-loops is exist
+g <- simplify(g)
+gc2 <-  fastgreedy.community(g)
+gc2
+```
+
+```{r}
+#modularity for each phase of the previous algorithm
+gc2$modularity
+#best modularity score
+max(gc2$modularity)
+#index (phase, i.e. partitioning) with the best score
+which.max(gc2$modularity)
+```
+
+```{r}
+#Store cluster ids for each vertex
+memb2 <- membership(gc2)
+head(memb2)
+```
+
+```{r}
+V(g)$label.cex = 0.5
+plot(g, vertex.size=5, vertex.label=V(g)$name,
+     vertex.color=memb2,vertex.label.dist=1.5, asp=FALSE)
+```

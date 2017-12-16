@@ -1,0 +1,366 @@
+---
+title: "Web Scraping"
+author: "Sigal Shaked"
+date: "1 December 2017"
+output: html_document
+---
+  
+  
+Start by setting your working directory to where the code and files are:
+```{r}
+folder = 'C:\\Users\\sigal\\OneDrive - post.bgu.ac.il\\sigal\\build courses\\data science\\2018\\classes\\class6'
+setwd(folder)
+
+#Or for all chuncks in this Rmarkdown:
+knitr::opts_knit$set(root.dir = folder)
+
+```
+ 
+#Downloading files with R
+## Example: Baltimore Camera Data
+ 
+Let's go to [ Baltimore Fixed Speed Cameras Site](https://data.baltimorecity.gov/Transportation/Baltimore-Fixed-Speed-Cameras/dz54-2aru) that displays Baltimore's fixed speed cameras on a map.
+
+To get this data we need to find a link to a convenient representation of this data, and download it into a file.
+
+### Checking for and creating directories
+
+```{r}
+if(!file.exists("data")){
+  dir.create("data")
+}
+```
+
+  
+### Getting data from the internet
+
+- Use the command download.file() to download a file from the internet.
+- Use code even if you could do it manually, helps reproducibility.
+- Important parameters are url, destfile, method
+- Useful for downloading tab-delimited, csv, and other files
+
+#### Some notes:
+
+  - If the url starts with http you can use download.file()
+  - If the url starts with https you may be ok on Windows
+  - If the url starts with https on Mac you may need to set method = "curl"
+
+
+Back to our site. How can we find a convenient representation of the data?
+Go to export->csv and *copy link address* (available on right click when placing the mouse on a link)
+
+```{r}
+fileURL <- 'https://data.baltimorecity.gov/api/views/dz54-2aru/rows.csv?accessType=DOWNLOAD&bom=true&format=true'
+#download.file(fileURL,'./data/cameras.csv')
+
+```
+
+Make sure to record the date you downloaded.
+
+```{r}
+downloaded<-date()
+downloaded
+```
+
+Read from local drive:
+
+```{r}
+cameraData <- read.csv("./data/cameras.csv", sep = ",", header=TRUE)
+head(cameraData)
+```
+
+***
+
+#Task 1: Read RSS 
+
+1. Find an interesting RSS source, e.g. BBC News (http://feeds.bbci.co.uk/news/world/rss.xml?edition=uk)
+2. Read the RSS into an Excel file. 
+- Convert to source view and then download the page to a local xml file.
+- Open the xml file with excel and select *as an XML table* in the available menu. 
+3. Download it with R
+
+***
+ 
+# Web Scraping
+## Example: Breakfast Menu
+
+Let's load a simple XML file and parse it. In our example we parse items in a breakfast menu.
+The same process can be used for analyzing XML that containd RSS feeds or API query results.
+
+First install and load necessary packages:
+```{r}
+#install.packages(XML)
+#install.packages(RCurl)
+```
+  
+Now read the XML file using the xmlTreeParse command, that parses an XML or HTML file or string containing XML/HTML content, and generates an R structure representing the XML/HTML tree.
+
+```{r}
+library(XML)
+library(RCurl)
+fileURL <- "http://www.w3schools.com/xml/simple.xml"
+#download.file(fileURL, destfile = './data/simple.xml')
+doc <- xmlTreeParse(file='./data/simple.xml', useInternalNodes = TRUE)
+```
+
+
+The xmlRoot isolates the top level XMLNode object resulting from parsing an XML document. Let's look at what we have:
+
+```{r}
+rootNode <- xmlRoot(doc)
+#print file 
+rootNode
+```
+
+Get the names of the elements under the root node:
+
+```{r}
+names(rootNode)
+```
+
+Get the first food element under the root node
+
+```{r}
+rootNode[[1]]
+```
+
+Get the first food component under the first food element
+```{r}
+rootNode[[1]][[1]]
+```
+
+### xmlSApply
+
+Extract each text element programatically:
+
+```{r}
+xmlSApply(rootNode,xmlValue)
+```
+
+### xpathApply
+
+xpathApply is a way to find XML nodes that match a particular criterion using XPath syntax.  
+
+XPath is a language for expressing such node subsetting with rich semantics for identifying nodes (by name, attributes etc)
+- /node Top level node
+- //node Node at any level
+- node[@attr-name] Node with an attribute name
+- node[@attr-name='bob'] Node with attribute name attr-name='bob'
+
+
+We use xpath to extract a list of elements with a specific tag for each column in the created dataset:
+
+```{r}
+# Get items on the menu and prices
+data = cbind(name = xpathSApply(rootNode,"//name",xmlValue), 
+      price = xpathSApply(rootNode,"//price",xmlValue),
+      description = xpathSApply(rootNode,"//description",xmlValue),
+      calories = xpathSApply(rootNode,"//calories",xmlValue))
+data
+```
+
+  
+#Getting data from webpages
+## Example: Baltimore Ravens
+
+Check the [Baltimore Ravens site] (http://espn.go.com/nfl/team/_/name/bal/baltimore-ravens) site. It contains regular season information on the left panel. Let's scrape this games information into a structured dataset using xpath.
+
+We parse the data like we did before, but this time with htmlTreeParse since this is an html page insted of an xml file:
+
+```{r}
+library(XML)
+library(RCurl)
+
+fileUrl <- "http://espn.go.com/nfl/team/_/name/bal/baltimore-ravens"
+# parse html
+doc <- htmlTreeParse(fileUrl, useInternalNodes = T)
+```
+
+
+```{r}
+# Get items on the menu and prices
+data1 = cbind(game = xpathSApply(doc,"//div[@class='game-info']",xmlValue),
+      gameMeta = xpathSApply(doc,"//div[@class='game-meta']",xmlValue))
+head(data1)
+```
+
+
+***
+
+#Task 2: Web Scraping
+
+1. Check the [Baltimore Ravens site] (http://espn.go.com/nfl/team/_/name/bal/baltimore-ravens) 
+site.
+2. Parse it and find how to add the regular season scores to the extracted dataset. 
+
+***
+  
+  
+#Reading data from JSON {jsonlite package}
+
+```{r}
+#install.packages(jsonlite)
+library(jsonlite)
+jsonData <- fromJSON("https://api.github.com/users/jtleek/repos")
+jsonData[1:5,1:3]
+```
+
+Get elements names:
+```{r}
+names(jsonData)
+```
+
+The json file was converted into a dataframe:
+```{r}
+class(jsonData)
+```
+
+Nested objects in json:
+```{r}
+names(jsonData$owner)
+```
+
+Writing data frames to JSON:
+
+```{r}
+myjson <- toJSON(iris[0:2,], pretty=TRUE)
+cat(myjson)
+```
+
+Convert back to JSON
+
+```{r}
+iris2 <- fromJSON(myjson)
+head(iris2)
+```
+  
+  
+# Getting data from Twitter API
+
+Installing relevant packages when using it for the first time: 
+
+```{r}
+# install.packages("twitteR")
+# install.packages("httr")
+# install.packages("base64enc")
+# install.packages("jsonlite")
+# install.packages("wordcloud")
+# install.packages("tm")
+```
+
+Loading relevant packages: 
+```{r}
+library(twitteR)
+library(httr)
+library(jsonlite)
+library(wordcloud)
+library(tm)
+```
+
+Setting auth keys, manually, or reading from a file: 
+```{r}
+# consumer_key <- "your_consumer_key"
+# consumer_secret <- "your_consumer_secret"
+# access_token <- "your_access_token"
+# access_secret <- "your_access_secret"
+source("twitterOAuth.R")
+```
+
+
+## Reading twits using twitter API with the httr package
+
+Here we set up the OAuth credentials:
+
+```{r}
+# start the authorisation process
+myapp = oauth_app("twitter", key=consumer_key, secret=consumer_secret)
+
+# sign using token and token secret
+sig1 = sign_oauth1.0(myapp, token=access_token, token_secret=access_secret)
+```
+
+Now let's get the last tweets in my home Timeline using the httr package.
+httr works well with Facebook, Google, Twitter, Github, etc. 
+The URL we input above related to part of the Twitter API. 
+
+```{r}
+my_timeline=GET("https://api.twitter.com/1.1/statuses/home_timeline.json", sig1)
+my_timeline
+```
+
+Converting the json results to a dataframe:
+```{r}
+library(jsonlite)
+json1 = httr::content(my_timeline)
+json2 = jsonlite::fromJSON(toJSON(json1))
+json2[,1:2]
+```
+
+## Reading twits with the twitteR package
+
+Now let's read my home timeline with the twitteR package that is suited for twitter.
+
+```{r}
+# Example: http://www.r-bloggers.com/downloading-your-twitter-feed-in-r/
+
+#Here we set up the OAuth credentials for a twitteR session:
+sig <- setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
+
+#reading twits from home Timeline
+timeLine <- homeTimeline(n = 80, retryOnRateLimit = 5)
+```
+
+And here is how we search for tweets that contain some search word:
+```{r}
+# http://davetang.org/muse/2013/04/06/using-the-r_twitter-package/
+#necessary file for Windows
+#download.file(url="http://curl.haxx.se/ca/cacert.pem", destfile="cacert.pem")
+
+searchRes <- searchTwitter("#TelAviv", n=200)
+#should get 200
+length(searchRes)
+```
+
+Here we extract texts from twits:
+
+```{r}
+#save text
+search_text <- sapply(searchRes, function(x) x$getText())
+head(search_text)
+```
+
+Let's analyze this text to have some fun. We use the tm (Text Mining) package.
+
+
+```{r}
+#create corpus
+search_text_corpus <- Corpus(VectorSource(search_text))
+
+#clean up
+#search_text_corpus <- tm_map(search_text_corpus, content_transformer(tolower)) 
+search_text_corpus <- tm_map(search_text_corpus, removePunctuation)
+search_text_corpus <- tm_map(search_text_corpus, function(x)removeWords(x,stopwords()))
+#remove strange characters:
+search_text_corpus <- tm_map(search_text_corpus, function(x) iconv(enc2utf8(x), sub = "byte"))
+
+```
+
+Let's dispay words related to our search word (tel aviv) according to their frequencies, using the wordcloud package.
+```{r}
+wordcloud(search_text_corpus,min.freq=5)
+```
+
+
+***
+
+#Task 3: Analyze Twits 
+
+1. Create a twitter account, then create a twitter application and save the following keys to an R file:
+- consumer_key <- "your_consumer_key"
+- consumer_secret <- "your_consumer_secret"
+- access_token <- "your_access_token"
+- access_secret <- "your_access_secret"
+
+2. Find an interesting search word, e.g. syria and read 200 twits with this word.
+
+3. clean the twits' text and display the cleaned text as a word cloud.

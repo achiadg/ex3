@@ -1,0 +1,99 @@
+---
+title: "web Scraping - Tasks Solutions"
+author: "Sigal Shaked"
+date: "1 December 2017"
+output: html_document
+---
+
+```{r}
+folder = 'C:\\Users\\sigal\\OneDrive - post.bgu.ac.il\\sigal\\build courses\\data science\\2018\\classes\\class6'
+setwd(folder)
+
+#Or for all chuncks in this Rmarkdown:
+knitr::opts_knit$set(root.dir = folder)
+
+```
+
+
+#Task 1: Read RSS
+
+1. Find an interesting RSS source, e.g. BBC News (http://feeds.bbci.co.uk/news/world/rss.xml?edition=uk)
+2. Read the RSS into an Excel file. 
+- Convert to source view and then download the page to a local xml file.
+- Open the xml file with excel and select *as an XML table* in the available menu. 
+3. Download it with R
+
+```{r}
+fileURL <- 'http://feeds.bbci.co.uk/news/world/rss.xml?edition=uk'
+#download.file(fileURL,'./data/BBC.xml')
+
+```
+
+***
+
+#Task 2: Web Sraping
+
+1. Check the [Baltimore Ravens site] (http://espn.go.com/nfl/team/_/name/bal/baltimore-ravens) 
+site.
+2. Parse it and find how to add the regular season scores to the extracted dataset. 
+
+```{r}
+library(XML)
+library(RCurl)
+
+fileUrl <- "http://espn.go.com/nfl/team/_/name/bal/baltimore-ravens"
+# parse html
+doc <- htmlTreeParse(fileUrl, useInternalNodes = T)
+```
+
+
+```{r}
+# Get items on the menu and prices
+data1 = cbind(game = xpathSApply(doc,"//div[@class='game-info']",xmlValue),
+      gameMeta = xpathSApply(doc,"//div[@class='game-meta']",xmlValue),
+      score = xpathSApply(doc,"//div[@class='score']",xmlValue))
+head(data1)
+```
+
+
+***
+
+#Task 3: Analyze Twits 
+
+1. Create a twitter account, then create a twitter application and save the following keys to an R file:
+- consumer_key <- "your_consumer_key"
+- consumer_secret <- "your_consumer_secret"
+- access_token <- "your_access_token"
+- access_secret <- "your_access_secret"
+
+2. Find an interesting search word, e.g. syria and read 200 twits with this word.
+
+3. clean the twits' text and display the cleaned text as a word cloud.
+
+```{r}
+library(twitteR)
+library(tm)
+library(wordcloud)
+library(httr)
+
+source("twitterOAuth.R")
+
+# Here we set up the OAuth credentials for a twitteR session:
+sig <- setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
+
+# search for tweets that contain some search word:
+searchRes <- searchTwitter("#syria", n=200)
+
+search_text <- sapply(searchRes, function(x) x$getText())
+
+#create corpus
+search_text_corpus <- Corpus(VectorSource(search_text))
+
+#clean up
+search_text_corpus <- tm_map(search_text_corpus, removePunctuation)
+search_text_corpus <- tm_map(search_text_corpus, function(x)removeWords(x,stopwords()))
+
+wordcloud(search_text_corpus,min.freq=5)
+```
+
+
