@@ -3,6 +3,9 @@ title: "final-report"
 output: md_document
 ---
 
+### Students: Hod Bublil, Achiad Gelerenter.
+### ID: 305212466, 305231995.   
+
 # question 1 part a
 
 ## set up the working directory for the task
