@@ -146,7 +146,7 @@ max(gc2$modularity)
 which.max(gc2$modularity)
 ```
 
-## We color the nodes by partitions, using the membership function that returns community ids for each vertex, according to our clustering model object (gc).We use the membership method to get the list of clusters assignments the nodes in the graph.
+## We color the nodes by partitions, using the membership function that returns community ids for each vertex, according to our clustering model object (gc2).We use the membership method to get the list of clusters assignments the nodes in the graph.
 
 ```{r}
 #Store cluster ids for each vertex
