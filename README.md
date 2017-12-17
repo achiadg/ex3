@@ -44,12 +44,16 @@ plot(g)
 clu <- components(g)
 groups(clu)
 ```
+![Image of github's cat](/images/question1_parta_image2.PNG)
+
 ## delete the nodes that are not part of the giant component of the graph. 
 
 ```{r}
 g_<-delete.vertices(g, c("chief", "ellis grey" , "susan grey" , "adele" , "thatch grey","bailey", "tucker", "ben"))
 plot(g_)
 ```
+
+![Image of github's cat](/images/question1_parta_image3.PNG)
 
 ## compute the betweeness of each node in the giant component of the graph. We use the betweeness algorhitm with igraph package on the g_ graph which includes only the giant component of the graph. the graph is not directed and he has no weights on the edges. The nobigint is set to TRUE in order to not use big integers in the calculation because This is only required for lattice-like graphs that have very many shortest paths between a pair of vertices.We also set the normalized parameter to false because we dont want to normalize the results.
 
@@ -60,6 +64,8 @@ betweenness(g_, v = V(g_), directed = FALSE, weights = NULL,
   nobigint = TRUE, normalized = FALSE)
 ```
 
+![Image of github's cat](/images/question1_parta_image4.PNG)
+
 ## compute the closeness of each node in the giant component of the graph. We use the closeness algorhitm with igraph package on the g_ graph which includes only the giant component of the graph. the graph has no weights on the edges. We also set the normalized parameter to false because we dont want to normalize the results.
 
 # The highest closeness that measured is for the actor : torres.
@@ -67,6 +73,8 @@ betweenness(g_, v = V(g_), directed = FALSE, weights = NULL,
 ```{r}
 closeness(g_, vids = V(g_),   weights = NULL, normalized = FALSE)
 ```
+
+![Image of github's cat](/images/question1_parta_image5.PNG)
 
 ## compute the iii.	Eigenvector of each node in the giant component of the graph. We use the eigen_centrality algorhitm with igraph package on the g_ graph which includes only the giant component of the graph. the graph is not directed and he has no weights on the edges. scale is Logical scalar, whether to scale the result to have a maximum score of one (we want to see which actor has the maximal Eigenvector. the options is A named list, to override some ARPACK options.
 
@@ -76,6 +84,8 @@ closeness(g_, vids = V(g_),   weights = NULL, normalized = FALSE)
 eigen_centrality(g_, directed = FALSE, scale = TRUE, weights = NULL,
   options = arpack_defaults)
 ```
+
+![Image of github's cat](/images/question1_parta_image6.PNG)
 
 # question 1 part b
 
