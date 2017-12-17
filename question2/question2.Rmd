@@ -1,7 +1,7 @@
 ## set up the working directory for the task
 
 ```{r}
-folder = 'C:/Users/àçéòã/Desktop/data science/ass3/question2'
+folder = 'C:/Users/Ã Ã§Ã©Ã²Ã£/Desktop/data science/ass3/question2'
 setwd(folder)
 
 #Or for all chuncks in this Rmarkdown:
@@ -69,13 +69,13 @@ for(i in 1:nrow(temp_df)){
 
 ```{r}
 res <- cbind(from= user1_edge,to=user2_edge)
-write.csv(res,file="C:/Users/àçéòã/Desktop/data science/ass3/question2/ga_edgelist.csv",row.names = F)
+write.csv(res,file="C:/Users/Ã Ã§Ã©Ã²Ã£/Desktop/data science/ass3/question2/twits_edgelist.csv",row.names = F)
 ```
 
 ## read the users edge list we created and create a graph from it using the igraph package. compute the degree of each node in the graph , and print the graph using the degree of each node to see which nodes are the most connected in the graph.
 
 ```{r}
-ga.data <- read.csv('ga_edgelist.csv', header = T)
+ga.data <- read.csv('twits_edgelist.csv', header = T)
 g <- graph.data.frame(ga.data,directed = F)
 degr.score <- degree(g)
 V(g)$size <- degr.score * 4 # multiply by 2 for scale 
