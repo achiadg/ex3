@@ -36,7 +36,7 @@ V(g)$size <- degr.score * 2 # multiply by 2 for scale
 plot(g) 
 ```
 
-![Image of github's cat](/Titanic/MyBestScore.PNG)
+![Image of github's cat](/images/question1_parta_image1.PNG)
 
 ## compute the component of the graph in order to delete the nodes that are not part of the giant component of the graph. (you asked us to work on the giant component of the graph).
 
