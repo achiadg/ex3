@@ -286,6 +286,9 @@ V(g)$size <- degr.score * 4 # multiply by 2 for scale
 
 plot(g, vertex.size=5, vertex.label=V(g)$name, vertex.label.dist=2, asp=FALSE)
 ```
+
+![Image of github's cat](/images/question2_image1.PNG)
+
 # question 2 part d
 
 ## compute the betweeness of each node in the graph. We use the betweeness algorhitm with igraph package on the g graph. the graph is not directed and he has no weights on the edges. The nobigint is set to TRUE in order to not use big integers in the calculation because This is only required for lattice-like graphs that have very many shortest paths between a pair of vertices.We also set the normalized parameter to false because we dont want to normalize the results.
@@ -297,6 +300,8 @@ betweenness(g, v = V(g), directed = FALSE, weights = NULL,
   nobigint = TRUE, normalized = FALSE)
 ```
 
+![Image of github's cat](/images/question2_image2.PNG)
+
 ## compute the closeness of each node in the giant component of the graph. We use the closeness algorhitm with igraph package on the g graph. the graph has no weights on the edges. We also set the normalized parameter to false because we dont want to normalize the results.
 
 # The highest closeness that measured is for the user: All the user in the same component has the same closeness value because each node connect to all the other nodes in the component. so all the nodes in the giant component has the best closeness value from the definition of closeness.
@@ -304,6 +309,8 @@ betweenness(g, v = V(g), directed = FALSE, weights = NULL,
 ```{r}
 closeness(g, vids = V(g),   weights = NULL, normalized = FALSE)
 ```
+
+![Image of github's cat](/images/question2_image3.PNG)
 
 ## compute the iii.	Eigenvector of each node in the giant component of the graph. We use the eigen_centrality algorhitm with igraph package on the g graph. the graph is not directed and he has no weights on the edges. scale is Logical scalar, whether to scale the result to have a maximum score of one (we want to see which actor has the maximal Eigenvector. the options is A named list, to override some ARPACK options.
 
@@ -315,6 +322,8 @@ eigen_centrality(g, directed = FALSE, scale = TRUE, weights = NULL,
   options = arpack_defaults)
 ```
 
+![Image of github's cat](/images/question2_image4.PNG)
+
 ## We devide the communities of the users graph using the edge.betweenness.community algorhitm of the igraph package. This is a divisive method that works on undirected unweighted graphs. It is based on calculating for each edge its betweeness - the number of shortest path going through this edge.It then iteratively removes the edge with the highest betweeness score, until reaching some threshold.The remaining connected vertices are the communities (clusters).
 
 # The number of communities that we get by the algorhitm is : 8.
@@ -323,6 +332,8 @@ eigen_centrality(g, directed = FALSE, scale = TRUE, weights = NULL,
 gc <-  edge.betweenness.community(g)
 gc
 ```
+
+![Image of github's cat](/images/question2_image5.PNG)
 
 ## We define a modularity measure that measures the quality of a network partition. It compares the number of edges in each cluster to the expected number of edges within it.
 
@@ -337,6 +348,8 @@ max(gc$modularity)
 which.max(gc$modularity)
 ```
 
+![Image of github's cat](/images/question2_image6.PNG)
+
 ## We color the nodes by partitions, using the membership function that returns community ids for each vertex, according to our clustering model object (gc).We use the membership method to get the list of clusters assignments the nodes in the graph.
 
 ```{r}
@@ -344,6 +357,8 @@ which.max(gc$modularity)
 memb <- membership(gc)
 head(memb)
 ```
+
+![Image of github's cat](/images/question2_image7.PNG)
 
 ## We print the graph according to the colors of the nodes that we get by the membership functions. We print the name of each node in distance of 1.5 from the center of the vertex.
 
@@ -362,6 +377,8 @@ plot(g, vertex.size=5, vertex.label=V(g)$name,
      vertex.color=memb,vertex.label.dist=1.5, asp=FALSE)
 ```
 
+![Image of github's cat](/images/question2_image8.PNG)
+
 ## We devide the communities of the grey anatomy using the fastgreedy.community algorhitm of the igraph package. This algorithm works on graphs with no self loops,We use the function simplify() to omit self loops from the graph.
 
 # The number of communities that we get by the algorhitm is : 8.
@@ -372,6 +389,8 @@ g <- simplify(g)
 gc2 <-  fastgreedy.community(g)
 gc2
 ```
+
+![Image of github's cat](/images/question2_image5.PNG)
 
 ## We define a modularity measure that measures the quality of a network partition. It compares the number of edges in each cluster to the expected number of edges within it.
 
@@ -386,6 +405,8 @@ max(gc2$modularity)
 which.max(gc2$modularity)
 ```
 
+![Image of github's cat](/images/question2_image6.PNG)
+
 ## We color the nodes by partitions, using the membership function that returns community ids for each vertex, according to our clustering model object (gc2).We use the membership method to get the list of clusters assignments the nodes in the graph.
 
 ```{r}
@@ -393,6 +414,7 @@ which.max(gc2$modularity)
 memb2 <- membership(gc2)
 head(memb2)
 ```
+![Image of github's cat](/images/question2_image7.PNG)
 
 ## We print the graph according to the colors of the nodes that we get by the membership functions. We print the name of each node in distance of 1.5 from the center of the vertex.
 
@@ -411,6 +433,8 @@ head(memb2)
 plot(g, vertex.size=5, vertex.label=V(g)$name,
      vertex.color=memb2,vertex.label.dist=1.5, asp=FALSE)
 ```
+
+![Image of github's cat](/images/question2_image8.PNG)
 
 # The two community algorithms gets the same result because we built the graph in a way that the modularity will be the same in every algorhitm because all the nodes connected to each other in the same component.
 
