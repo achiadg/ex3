@@ -204,7 +204,7 @@ achiad_credentials <- setup_twitter_oauth(consumer_key, consumer_secret, access_
 ```
 # question 2 part a
 
-# the data we collected is the users that tweets on the champions league. and all the details that tweeter save for his users. we collect the datain temp_df data frame.
+# the data we collected is the users that tweets on the champions league. and all the details that tweeter save for his users. we collect the data in temp_df data frame.
 
 ## Here we get the 500 last tweets that people twits on the champions league, after we get all this twits we convert them to data frame, and take the usernames that twited those twits. once we have this usernames we lookup for the users for those usernames and save them in dataframe for future use.
 
