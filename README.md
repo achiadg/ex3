@@ -76,7 +76,7 @@ closeness(g_, vids = V(g_),   weights = NULL, normalized = FALSE)
 
 ![Image of github's cat](/images/question1_parta_image5.PNG)
 
-## compute the iii.	Eigenvector of each node in the giant component of the graph. We use the eigen_centrality algorhitm with igraph package on the g_ graph which includes only the giant component of the graph. the graph is not directed and he has no weights on the edges. scale is Logical scalar, whether to scale the result to have a maximum score of one (we want to see which actor has the maximal Eigenvector. the options is A named list, to override some ARPACK options.
+## compute the Eigenvector of each node in the giant component of the graph. We use the eigen_centrality algorhitm with igraph package on the g_ graph which includes only the giant component of the graph. the graph is not directed and he has no weights on the edges. scale is Logical scalar, whether to scale the result to have a maximum score of one (we want to see which actor has the maximal Eigenvector. the options is A named list, to override some ARPACK options.
 
 # The highest Eigenvector that measured is for the actor : karev.
 
@@ -312,7 +312,7 @@ closeness(g, vids = V(g),   weights = NULL, normalized = FALSE)
 
 ![Image of github's cat](/images/question2_image3.PNG)
 
-## compute the iii.	Eigenvector of each node in the giant component of the graph. We use the eigen_centrality algorhitm with igraph package on the g graph. the graph is not directed and he has no weights on the edges. scale is Logical scalar, whether to scale the result to have a maximum score of one (we want to see which actor has the maximal Eigenvector. the options is A named list, to override some ARPACK options.
+## compute the Eigenvector of each node in the giant component of the graph. We use the eigen_centrality algorhitm with igraph package on the g graph. the graph is not directed and he has no weights on the edges. scale is Logical scalar, whether to scale the result to have a maximum score of one (we want to see which actor has the maximal Eigenvector. the options is A named list, to override some ARPACK options.
 
 # The highest Eigenvector that measured is for the user : All the user in the same component has the same Eigenvector value because each node connect to all the other nodes in the component. so all the nodes in the giant component has the best Eigenvector value from the definition of Eigenvector.
 
