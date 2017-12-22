@@ -92,20 +92,25 @@ eigen_centrality(g_, directed = FALSE, scale = TRUE, weights = NULL,
 
 # question 1 part b
 
-## We devide the communities of the grey anatomy using the edge.betweenness.community algorhitm of the igraph package. This is a divisive method that works on undirected unweighted graphs. It is based on calculating for each edge its betweeness - the number of shortest path going through this edge.It then iteratively removes the edge with the highest betweeness score, until reaching some threshold.The remaining connected vertices are the communities (clusters).
-
-# The number of communities that we get by the algorhitm is : 7.
+## delete the nodes that are not part of the giant component of the graph. 
 
 ```{r}
-gc <-  edge.betweenness.community(g)
+g_<-delete.vertices(g, c("chief", "ellis grey" , "susan grey" , "adele" , "thatch grey","bailey", "tucker", "ben"))
+plot(g_)
+```
+
+## We devide the communities of the grey anatomy using the edge.betweenness.community algorhitm of the igraph package. This is a divisive method that works on undirected unweighted graphs. It is based on calculating for each edge its betweeness - the number of shortest path going through this edge.It then iteratively removes the edge with the highest betweeness score, until reaching some threshold.The remaining connected vertices are the communities (clusters).
+
+# The number of communities that we get by the algorhitm is : 6.
+
+```{r}
+gc <-  edge.betweenness.community(g_)
 gc
 ```
 
-![Image of github's cat](/images/question1_partb_image1.PNG)
-
 ## We define a modularity measure that measures the quality of a network partition. It compares the number of edges in each cluster to the expected number of edges within it.
 
-# The modularity that we get by the algorhitm is:  0.5774221 .
+# The modularity that we get by the algorhitm is:  0.46875 .
 
 ```{r}
 #modularity for each phase of the previous algorithm
@@ -116,8 +121,6 @@ max(gc$modularity)
 which.max(gc$modularity)
 ```
 
-![Image of github's cat](/images/question1_partb_image2.PNG)
-
 ## We color the nodes by partitions, using the membership function that returns community ids for each vertex, according to our clustering model object (gc).We use the membership method to get the list of clusters assignments the nodes in the graph.
 
 ```{r}
@@ -126,42 +129,34 @@ memb <- membership(gc)
 head(memb)
 ```
 
-![Image of github's cat](/images/question1_partb_image3.PNG)
-
 ## We print the graph according to the colors of the nodes that we get by the membership functions. We print the name of each node in distance of 1.5 from the center of the vertex.
 
 # The size of each community is:
-#                                1) size 5.
-#                                2) size 3.
-#                                3) size 5.
+#                                1) size 4.
+#                                2) size 4.
+#                                3) size 4.
 #                                4) size 4.
-#                                5) size 4.
-#                                6) size 3.
-#                                7) size 8.
-
+#                                5) size 3.
+#                                6) size 5.
 ```{r}
-plot(g, vertex.size=5, vertex.label=V(g)$name,
+plot(g_, vertex.size=5, vertex.label=V(g_)$name,
      vertex.color=memb,vertex.label.dist=1.5, asp=FALSE)
 ```
 
-![Image of github's cat](/images/question1_partb_image4.PNG)
-
 ## We devide the communities of the grey anatomy using the fastgreedy.community algorhitm of the igraph package. This algorithm works on graphs with no self loops,We use the function simplify() to omit self loops from the graph.
 
-# The number of communities that we get by the algorhitm is : 6.
+# The number of communities that we get by the algorhitm is : 5.
 
 ```{r}
 # Remove self-loops is exist
-g <- simplify(g)
-gc2 <-  fastgreedy.community(g)
+g_<- simplify(g_)
+gc2 <-  fastgreedy.community(g_)
 gc2
 ```
 
-![Image of github's cat](/images/question1_partb_image5.PNG)
-
 ## We define a modularity measure that measures the quality of a network partition. It compares the number of edges in each cluster to the expected number of edges within it.
 
-# The modularity that we get by the algorhitm is:  0.5947232 .
+# The modularity that we get by the algorhitm is:  0.4789541 .
 
 ```{r}
 #modularity for each phase of the previous algorithm
@@ -172,8 +167,6 @@ max(gc2$modularity)
 which.max(gc2$modularity)
 ```
 
-![Image of github's cat](/images/question1_partb_image6.PNG)
-
 ## We color the nodes by partitions, using the membership function that returns community ids for each vertex, according to our clustering model object (gc2).We use the membership method to get the list of clusters assignments the nodes in the graph.
 
 ```{r}
@@ -182,23 +175,19 @@ memb2 <- membership(gc2)
 head(memb2)
 ```
 
-![Image of github's cat](/images/question1_partb_image7.PNG)
-
 ## We print the graph according to the colors of the nodes that we get by the membership functions. We print the name of each node in distance of 1.5 from the center of the vertex.
 
 # The size of each community is: 
 #                                1) size 5.
 #                                2) size 3.
-#                                3) size 5.
+#                                3) size 4.
 #                                4) size 5.
-#                                5) size 4.
-#                                6) size 10.
+#                                5) size 7.
 
 ```{r}
-plot(g, vertex.size=5, vertex.label=V(g)$name,
+plot(g_, vertex.size=5, vertex.label=V(g_)$name,
      vertex.color=memb2,vertex.label.dist=1.5, asp=FALSE)
 ```
-![Image of github's cat](/images/question1_partb_image8.PNG)
 
 # question 2
 
