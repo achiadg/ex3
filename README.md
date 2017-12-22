@@ -98,6 +98,7 @@ eigen_centrality(g_, directed = FALSE, scale = TRUE, weights = NULL,
 g_<-delete.vertices(g, c("chief", "ellis grey" , "susan grey" , "adele" , "thatch grey","bailey", "tucker", "ben"))
 plot(g_)
 ```
+![Image of github's cat](/images/question1_parta_image3.PNG)
 
 ## We devide the communities of the grey anatomy using the edge.betweenness.community algorhitm of the igraph package. This is a divisive method that works on undirected unweighted graphs. It is based on calculating for each edge its betweeness - the number of shortest path going through this edge.It then iteratively removes the edge with the highest betweeness score, until reaching some threshold.The remaining connected vertices are the communities (clusters).
 
@@ -107,6 +108,7 @@ plot(g_)
 gc <-  edge.betweenness.community(g_)
 gc
 ```
+![Image of github's cat](/images/question1_partb_image1.PNG)
 
 ## We define a modularity measure that measures the quality of a network partition. It compares the number of edges in each cluster to the expected number of edges within it.
 
@@ -121,6 +123,8 @@ max(gc$modularity)
 which.max(gc$modularity)
 ```
 
+![Image of github's cat](/images/question1_partb_image2.PNG)
+
 ## We color the nodes by partitions, using the membership function that returns community ids for each vertex, according to our clustering model object (gc).We use the membership method to get the list of clusters assignments the nodes in the graph.
 
 ```{r}
@@ -128,6 +132,8 @@ which.max(gc$modularity)
 memb <- membership(gc)
 head(memb)
 ```
+
+![Image of github's cat](/images/question1_partb_image3.PNG)
 
 ## We print the graph according to the colors of the nodes that we get by the membership functions. We print the name of each node in distance of 1.5 from the center of the vertex.
 
@@ -143,6 +149,8 @@ plot(g_, vertex.size=5, vertex.label=V(g_)$name,
      vertex.color=memb,vertex.label.dist=1.5, asp=FALSE)
 ```
 
+![Image of github's cat](/images/question1_partb_image4.PNG)
+
 ## We devide the communities of the grey anatomy using the fastgreedy.community algorhitm of the igraph package. This algorithm works on graphs with no self loops,We use the function simplify() to omit self loops from the graph.
 
 # The number of communities that we get by the algorhitm is : 5.
@@ -153,6 +161,8 @@ g_<- simplify(g_)
 gc2 <-  fastgreedy.community(g_)
 gc2
 ```
+
+![Image of github's cat](/images/question1_partb_image5.PNG)
 
 ## We define a modularity measure that measures the quality of a network partition. It compares the number of edges in each cluster to the expected number of edges within it.
 
@@ -167,6 +177,8 @@ max(gc2$modularity)
 which.max(gc2$modularity)
 ```
 
+![Image of github's cat](/images/question1_partb_image6.PNG)
+
 ## We color the nodes by partitions, using the membership function that returns community ids for each vertex, according to our clustering model object (gc2).We use the membership method to get the list of clusters assignments the nodes in the graph.
 
 ```{r}
@@ -174,6 +186,8 @@ which.max(gc2$modularity)
 memb2 <- membership(gc2)
 head(memb2)
 ```
+
+![Image of github's cat](/images/question1_partb_image7.PNG)
 
 ## We print the graph according to the colors of the nodes that we get by the membership functions. We print the name of each node in distance of 1.5 from the center of the vertex.
 
@@ -188,6 +202,8 @@ head(memb2)
 plot(g_, vertex.size=5, vertex.label=V(g_)$name,
      vertex.color=memb2,vertex.label.dist=1.5, asp=FALSE)
 ```
+
+![Image of github's cat](/images/question1_partb_image8.PNG)
 
 # question 2
 
